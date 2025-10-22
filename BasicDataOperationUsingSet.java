@@ -1,10 +1,10 @@
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.TreeSet;
 import java.util.Set;
 
 /**
- * Клас BasicDataOperationUsingSet реалізує операції з множиною HashSet для byte.
+ * Клас BasicDataOperationUsingSet реалізує операції з множиною TreeSet для byte.
  * 
  * <p>Методи класу:</p>
  * <ul>
@@ -20,7 +20,7 @@ import java.util.Set;
 public class BasicDataOperationUsingSet {
     byte byteValueToSearch;
     Byte[] byteArray;
-    Set<Byte> dateTimeSet = new HashSet<>();
+    Set<Byte> dateTimeSet = new TreeSet<>();
 
     /**
      * Конструктор, який iнiцiалiзує об'єкт з готовими даними.
@@ -31,11 +31,11 @@ public class BasicDataOperationUsingSet {
     BasicDataOperationUsingSet(byte byteValueToSearch, Byte[] byteArray) {
         this.byteValueToSearch = byteValueToSearch;
         this.byteArray = byteArray;
-        this.dateTimeSet = new HashSet<>(Arrays.asList(byteArray));
+        this.dateTimeSet = new TreeSet<>(Arrays.asList(byteArray));
     }
     
     /**
-     * Запускає комплексний аналіз даних з використанням множини HashSet.
+     * Запускає комплексний аналіз даних з використанням множини TreeSet.
      * 
      * Метод завантажує дані, виконує операції з множиною та масивом byte.
      */
@@ -124,12 +124,12 @@ public class BasicDataOperationUsingSet {
 
         boolean elementExists = this.dateTimeSet.contains(byteValueToSearch);
 
-        PerformanceTracker.displayOperationTime(timeStart, "пошук елемента в HashSet чисел");
+        PerformanceTracker.displayOperationTime(timeStart, "пошук елемента в TreeSet чисел");
 
         if (elementExists) {
-            System.out.println("Елемент '" + byteValueToSearch + "' знайдено в HashSet");
+            System.out.println("Елемент '" + byteValueToSearch + "' знайдено в TreeSet");
         } else {
-            System.out.println("Елемент '" + byteValueToSearch + "' відсутній в HashSet.");
+            System.out.println("Елемент '" + byteValueToSearch + "' відсутній в TreeSet.");
         }
     }
 
@@ -138,7 +138,7 @@ public class BasicDataOperationUsingSet {
      */
     private void locateMinMaxInSet() {
         if (dateTimeSet == null || dateTimeSet.isEmpty()) {
-            System.out.println("HashSet є пустим або не ініціалізованим.");
+            System.out.println("TreeSet є пустим або не ініціалізованим.");
             return;
         }
 
@@ -147,10 +147,10 @@ public class BasicDataOperationUsingSet {
         byte minValue = Collections.min(dateTimeSet);
         byte maxValue = Collections.max(dateTimeSet);
 
-        PerformanceTracker.displayOperationTime(timeStart, "визначення мiнiмального i максимального числа в HashSet");
+        PerformanceTracker.displayOperationTime(timeStart, "визначення мiнiмального i максимального числа в TreeSet");
 
-        System.out.println("Найменше значення в HashSet: " + minValue);
-        System.out.println("Найбільше значення в HashSet: " + maxValue);
+        System.out.println("Найменше значення в TreeSet: " + minValue);
+        System.out.println("Найбільше значення в TreeSet: " + maxValue);
     }
 
     /**
@@ -158,7 +158,7 @@ public class BasicDataOperationUsingSet {
      */
     private void analyzeArrayAndSet() {
         System.out.println("Кiлькiсть елементiв в масивi: " + byteArray.length);
-        System.out.println("Кiлькiсть елементiв в HashSet: " + dateTimeSet.size());
+        System.out.println("Кiлькiсть елементiв в TreeSet: " + dateTimeSet.size());
 
         boolean allElementsPresent = true;
         for (byte dateTimeElement : byteArray) {
@@ -169,9 +169,9 @@ public class BasicDataOperationUsingSet {
         }
 
         if (allElementsPresent) {
-            System.out.println("Всi елементи масиву наявні в HashSet.");
+            System.out.println("Всi елементи масиву наявні в TreeSet.");
         } else {
-            System.out.println("Не всi елементи масиву наявні в HashSet.");
+            System.out.println("Не всi елементи масиву наявні в TreeSet.");
         }
     }
 }

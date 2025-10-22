@@ -1,10 +1,10 @@
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * Клас BasicDataOperationUsingList реалізує операції з колекціями типу ArrayList для даних byte.
+ * Клас BasicDataOperationUsingList реалізує операції з колекціями типу Vector для даних byte.
  * 
  * <p>Методи класу:</p>
  * <ul>
@@ -31,7 +31,7 @@ public class BasicDataOperationUsingList {
     BasicDataOperationUsingList(byte byteValueToSearch, Byte[] byteArray) {
         this.byteValueToSearch = byteValueToSearch;
         this.byteArray = byteArray;
-        this.dateTimeList = new ArrayList<>(Arrays.asList(byteArray));
+        this.dateTimeList = new Vector<>(Arrays.asList(byteArray));
     }
     
     /**
@@ -122,7 +122,7 @@ public class BasicDataOperationUsingList {
     }
 
     /**
-     * Шукає конкретне значення чисел в колекції ArrayList.
+     * Шукає конкретне значення чисел в колекції Vector.
      */
     void findInList() {
         long timeStart = System.nanoTime();
@@ -132,18 +132,18 @@ public class BasicDataOperationUsingList {
         PerformanceTracker.displayOperationTime(timeStart, "пошук елемента в List чисел");        
 
         if (position >= 0) {
-            System.out.println("Елемент '" + byteValueToSearch + "' знайдено в ArrayList за позицією: " + position);
+            System.out.println("Елемент '" + byteValueToSearch + "' знайдено в Vector за позицією: " + position);
         } else {
-            System.out.println("Елемент '" + byteValueToSearch + "' відсутній в ArrayList.");
+            System.out.println("Елемент '" + byteValueToSearch + "' відсутній в Vector.");
         }
     }
 
     /**
-     * Визначає найменше і найбільше значення в колекції ArrayList з числами.
+     * Визначає найменше і найбільше значення в колекції Vector з числами.
      */
     void locateMinMaxInList() {
         if (dateTimeList == null || dateTimeList.isEmpty()) {
-            System.out.println("Колекція ArrayList є пустою або не ініціалізованою.");
+            System.out.println("Колекція Vector є пустою або не ініціалізованою.");
             return;
         }
 
@@ -167,6 +167,6 @@ public class BasicDataOperationUsingList {
 
         Collections.sort(dateTimeList);
 
-        PerformanceTracker.displayOperationTime(timeStart, "упорядкування ArrayList числа");
+        PerformanceTracker.displayOperationTime(timeStart, "упорядкування Vector числа");
     }
 }
