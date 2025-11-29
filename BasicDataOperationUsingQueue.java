@@ -127,7 +127,8 @@ public class BasicDataOperationUsingQueue {
         // вимірюємо час пошуку в черзі
         long timeStart = System.nanoTime();
 
-        boolean elementExists = this.dateTimeQueue.contains(byteValueToSearch);
+        boolean elementExists = dateTimeQueue.stream()
+            .anyMatch(dateTime -> dateTime.equals(byteValueToSearch));
 
         PerformanceTracker.displayOperationTime(timeStart, "пошук елемента в Queue чисел");
 
@@ -150,8 +151,13 @@ public class BasicDataOperationUsingQueue {
         // відстежуємо час пошуку граничних значень
         long timeStart = System.nanoTime();
 
-        byte minValue = Collections.min(dateTimeQueue);
-        byte maxValue = Collections.max(dateTimeQueue);
+        Byte minValue = dateTimeQueue.stream()
+                .min(Byte::compareTo)
+                .orElse(null);
+       
+        Byte maxValue = dateTimeQueue.stream()
+                .max(Byte::compareTo)
+                .orElse(null);
 
         PerformanceTracker.displayOperationTime(timeStart, "визначення мiнiмального i максимального числа в Queue");
 

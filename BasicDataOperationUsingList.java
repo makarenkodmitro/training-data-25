@@ -70,7 +70,9 @@ public class BasicDataOperationUsingList {
     void performArraySorting() {
         long timeStart = System.nanoTime();
 
-        Arrays.sort(byteArray);
+        byteArray = Arrays.stream(byteArray)
+                              .sorted()
+                              .toArray(Byte[]::new);
 
         PerformanceTracker.displayOperationTime(timeStart, "упорядкування масиву чисел");
     }
@@ -81,7 +83,11 @@ public class BasicDataOperationUsingList {
     void findInArray() {
         long timeStart = System.nanoTime();
 
-        int position = Arrays.binarySearch(this.byteArray, byteValueToSearch);
+        int position = Arrays.stream(byteArray)
+                .map(Arrays.asList(byteArray)::indexOf)
+                .filter(i -> byteValueToSearch == byteArray[i])
+                .findFirst()
+                .orElse(-1);
 
         PerformanceTracker.displayOperationTime(timeStart, "пошук елемента в масивi чисел");
 
@@ -103,22 +109,19 @@ public class BasicDataOperationUsingList {
 
         long timeStart = System.nanoTime();
 
-        byte minValue = byteArray[0];
-        byte maxValue = byteArray[0];
+        Byte min = Arrays.stream(byteArray)
+                                  .min(Byte::compareTo)
+                                  .orElse(null);
 
-        for (byte currentDateTime : byteArray) {
-            if (byteValueToSearch < minValue) {
-                minValue = currentDateTime;
-            }
-            if (byteValueToSearch > maxValue) {
-                maxValue = currentDateTime;
-            }
-        }
+
+        Byte max = Arrays.stream(byteArray)
+                                  .max(Byte::compareTo)
+                                  .orElse(null);
 
         PerformanceTracker.displayOperationTime(timeStart, "визначення мiнiмального i максимального числа в масивi");
 
-        System.out.println("Найменше значення в масивi: " + minValue);
-        System.out.println("Найбільше значення в масивi: " + maxValue);
+        System.out.println("Найменше значення в масивi: " + min);
+        System.out.println("Найбільше значення в масивi: " + max);
     }
 
     /**
@@ -127,7 +130,11 @@ public class BasicDataOperationUsingList {
     void findInList() {
         long timeStart = System.nanoTime();
 
-        int position = Collections.binarySearch(this.dateTimeList, byteValueToSearch);
+        int position = dateTimeList.stream()
+            .map(dateTimeList::indexOf)
+            .filter(i -> byteValueToSearch == dateTimeList.get(i))
+            .findFirst()
+            .orElse(-1);
 
         PerformanceTracker.displayOperationTime(timeStart, "пошук елемента в List чисел");        
 
@@ -165,7 +172,9 @@ public class BasicDataOperationUsingList {
     void sortList() {
         long timeStart = System.nanoTime();
 
-        Collections.sort(dateTimeList);
+        dateTimeList = dateTimeList.stream()
+                       .sorted()
+                       .collect(java.util.stream.Collectors.toList());
 
         PerformanceTracker.displayOperationTime(timeStart, "упорядкування ArrayList числа");
     }

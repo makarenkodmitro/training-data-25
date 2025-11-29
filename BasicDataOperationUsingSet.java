@@ -122,7 +122,8 @@ public class BasicDataOperationUsingSet {
     private void findInSet() {
         long timeStart = System.nanoTime();
 
-        boolean elementExists = this.dateTimeSet.contains(byteValueToSearch);
+        boolean elementExists = dateTimeSet.stream()
+            .anyMatch(dateTime -> dateTime.equals(byteValueToSearch));
 
         PerformanceTracker.displayOperationTime(timeStart, "пошук елемента в HashSet чисел");
 
@@ -144,8 +145,13 @@ public class BasicDataOperationUsingSet {
 
         long timeStart = System.nanoTime();
 
-        byte minValue = Collections.min(dateTimeSet);
-        byte maxValue = Collections.max(dateTimeSet);
+        Byte minValue = dateTimeSet.stream()
+                .min(Byte::compareTo)
+                .orElse(null);
+       
+        Byte maxValue = dateTimeSet.stream()
+                .max(Byte::compareTo)
+                .orElse(null);
 
         PerformanceTracker.displayOperationTime(timeStart, "визначення мiнiмального i максимального числа в HashSet");
 
@@ -160,13 +166,8 @@ public class BasicDataOperationUsingSet {
         System.out.println("Кiлькiсть елементiв в масивi: " + byteArray.length);
         System.out.println("Кiлькiсть елементiв в HashSet: " + dateTimeSet.size());
 
-        boolean allElementsPresent = true;
-        for (byte dateTimeElement : byteArray) {
-            if (!dateTimeSet.contains(dateTimeElement)) {
-                allElementsPresent = false;
-                break;
-            }
-        }
+        boolean allElementsPresent = Arrays.stream(byteArray)
+                .allMatch(dateTimeSet::contains);
 
         if (allElementsPresent) {
             System.out.println("Всi елементи масиву наявні в HashSet.");
