@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.LinkedHashMap;
 
 /**
@@ -32,21 +33,7 @@ public class BasicDataOperationUsingMap {
     private HashMap<Chinchilla, String> hashtable;
     private LinkedHashMap<Chinchilla, String> treeMap;
 
-    /**
-     * Компаратор для сортування Map.Entry за значеннями String.
-     * Використовує метод String.compareTo() для порівняння імен власників.
-     */
-    static class OwnerValueComparator implements Comparator<Map.Entry<Chinchilla, String>> {
-        @Override
-        public int compare(Map.Entry<Chinchilla, String> e1, Map.Entry<Chinchilla, String> e2) {
-            String v1 = e1.getValue();
-            String v2 = e2.getValue();
-            if (v1 == null && v2 == null) return 0;
-            if (v1 == null) return -1;
-            if (v2 == null) return 1;
-            return v1.compareTo(v2);
-        }
-    }
+    // Значення сортуємо за звичайним порівнянням String (null-значення передані перші)
 
     /**
      * Внутрішній клас Chinchilla для зберігання інформації про домашню тварину.
@@ -203,9 +190,9 @@ public class BasicDataOperationUsingMap {
         System.out.println("\n=== Пари ключ-значення в HashMap ===");
         long timeStart = System.nanoTime();
 
-        for (Map.Entry<Chinchilla, String> entry : hashtable.entrySet()) {
-            System.out.println("  " + entry.getKey() + " -> " + entry.getValue());
-        }
+        hashtable.entrySet().forEach(entry ->
+            System.out.println("  " + entry.getKey() + " -> " + entry.getValue())
+        );
 
         PerformanceTracker.displayOperationTime(timeStart, "виведення пари ключ-значення в HashMap");
     }
@@ -213,23 +200,19 @@ public class BasicDataOperationUsingMap {
     /**
      * Сортує HashMap за ключами.
      * Використовує Collections.sort() з природним порядком Chinchilla (Chinchilla.compareTo()).
-     * Перезаписує hashtable відсортованими даними.
+     * Перезаписує hashmap відсортованими даними.
      */
     private void sortHashMap() {
         long timeStart = System.nanoTime();
 
-        // Створюємо список ключів і сортуємо за природним порядком Chinchilla
-        List<Chinchilla> sortedKeys = new ArrayList<>(hashtable.keySet());
-        Collections.sort(sortedKeys);
-        
-        // Створюємо нову LinkedHashMap з відсортованими ключами — зберігає порядок вставки
-        LinkedHashMap<Chinchilla, String> sortedHashMap = new LinkedHashMap<>();
-        for (Chinchilla key : sortedKeys) {
-            sortedHashMap.put(key, hashtable.get(key));
-        }
-        
-        // Перезаписуємо оригінальну hashtable
-        hashtable = sortedHashMap;
+       hashtable = hashtable.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        HashMap::new
+                ));
 
         PerformanceTracker.displayOperationTime(timeStart, "сортування HashMap за ключами");
     }
@@ -260,25 +243,18 @@ public class BasicDataOperationUsingMap {
     void findByValueInHashMap() {
         long timeStart = System.nanoTime();
 
-        // Створюємо список Entry та сортуємо за значеннями
-        List<Map.Entry<Chinchilla, String>> entries = new ArrayList<>(hashtable.entrySet());
-        OwnerValueComparator comparator = new OwnerValueComparator();
-        Collections.sort(entries, comparator);
+        List<Chinchilla> keysToRemove = hashtable.entrySet().stream()
+                .filter(entry -> entry.getValue() != null && entry.getValue().equals(VALUE_TO_SEARCH_AND_DELETE))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
 
-        // Створюємо тимчасовий Entry для пошуку
-        Map.Entry<Chinchilla, String> searchEntry = new Map.Entry<Chinchilla, String>() {
-            public Chinchilla getKey() { return null; }
-            public String getValue() { return VALUE_TO_SEARCH_AND_DELETE; }
-            public String setValue(String value) { return null; }
-        };
 
-        int position = Collections.binarySearch(entries, searchEntry, comparator);
+        keysToRemove.forEach(hashtable::remove);
 
         PerformanceTracker.displayOperationTime(timeStart, "бінарний пошук за значенням в HashMap");
 
-        if (position >= 0) {
-            Map.Entry<Chinchilla, String> foundEntry = entries.get(position);
-            System.out.println("Власника '" + VALUE_TO_SEARCH_AND_DELETE + "' знайдено. Chinchilla: " + foundEntry.getKey());
+        if (!keysToRemove.isEmpty()) {
+            System.out.println("Власника '" + VALUE_TO_SEARCH_AND_DELETE + "' знайдено в HashMap");
         } else {
             System.out.println("Власник '" + VALUE_TO_SEARCH_AND_DELETE + "' відсутній в HashMap.");
         }
@@ -320,16 +296,12 @@ public class BasicDataOperationUsingMap {
     void removeByValueFromHashMap() {
         long timeStart = System.nanoTime();
 
-        List<Chinchilla> keysToRemove = new ArrayList<>();
-        for (Map.Entry<Chinchilla, String> entry : hashtable.entrySet()) {
-            if (entry.getValue() != null && entry.getValue().equals(VALUE_TO_SEARCH_AND_DELETE)) {
-                keysToRemove.add(entry.getKey());
-            }
-        }
-        
-        for (Chinchilla key : keysToRemove) {
-            hashtable.remove(key);
-        }
+        List<Chinchilla> keysToRemove = hashtable.entrySet().stream()
+                .filter(entry -> entry.getValue() != null && entry.getValue().equals(VALUE_TO_SEARCH_AND_DELETE))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+       
+        keysToRemove.forEach(hashtable::remove);
 
         PerformanceTracker.displayOperationTime(timeStart, "видалення за значенням з HashMap");
 
@@ -401,7 +373,9 @@ public class BasicDataOperationUsingMap {
 
         // Створюємо список Entry та сортуємо за значеннями
         List<Map.Entry<Chinchilla, String>> entries = new ArrayList<>(treeMap.entrySet());
-        OwnerValueComparator comparator = new OwnerValueComparator();
+        Comparator<Map.Entry<Chinchilla, String>> comparator = Comparator.comparing(
+            Map.Entry::getValue, Comparator.nullsFirst(Comparator.naturalOrder())
+        );
         Collections.sort(entries, comparator);
 
         // Створюємо тимчасовий Entry для пошуку
