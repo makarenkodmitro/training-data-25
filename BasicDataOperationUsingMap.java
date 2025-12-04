@@ -30,8 +30,8 @@ public class BasicDataOperationUsingMap {
     private final String VALUE_TO_SEARCH_AND_DELETE = "Зінаїда";
     private final String VALUE_TO_ADD = "Гнат";
 
-    private HashMap<Chinchilla, String> hashtable;
-    private LinkedHashMap<Chinchilla, String> treeMap;
+    private HashMap<Chinchilla, String> hashMap;
+    private LinkedHashMap<Chinchilla, String> linkedHashMap;
 
     // Значення сортуємо за звичайним порівнянням String (null-значення передані перші)
 
@@ -120,12 +120,12 @@ public class BasicDataOperationUsingMap {
     /**
      * Конструктор, який ініціалізує об'єкт з готовими даними.
      * 
-     * @param hashtable HashMap з початковими даними (ключ: Chinchilla, значення: ім'я власника)
-     * @param treeMap LinkedHashMap з початковими даними (ключ: Chinchilla, значення: ім'я власника)
+     * @param hashMap HashMap з початковими даними (ключ: Chinchilla, значення: ім'я власника)
+     * @param linkedHashMap LinkedHashMap з початковими даними (ключ: Chinchilla, значення: ім'я власника)
      */
-    BasicDataOperationUsingMap(HashMap<Chinchilla, String> hashtable, LinkedHashMap<Chinchilla, String> treeMap) {
-        this.hashtable = hashtable;
-        this.treeMap = treeMap;
+    BasicDataOperationUsingMap(HashMap<Chinchilla, String> hashMap, LinkedHashMap<Chinchilla, String> linkedHashMap) {
+        this.hashMap = hashMap;
+        this.linkedHashMap = linkedHashMap;
     }
     
     /**
@@ -136,7 +136,7 @@ public class BasicDataOperationUsingMap {
     public void executeDataOperations() {
         // Спочатку працюємо з HashMap
         System.out.println("========= Операції з HashMap =========");
-        System.out.println("Початковий розмір HashMap: " + hashtable.size());
+        System.out.println("Початковий розмір HashMap: " + hashMap.size());
         
         // Пошук до сортування
         findByKeyInHashMap();
@@ -147,7 +147,7 @@ public class BasicDataOperationUsingMap {
         // Вивід незмінної (оригінальної) HashMap
         printHashMap();
 
-        // Пошук після сортування (на тій же оригінальній hashtable)
+        // Пошук після сортування (на тій же оригінальній hashMap)
         findByKeyInHashMap();
         findByValueInHashMap();
 
@@ -156,11 +156,11 @@ public class BasicDataOperationUsingMap {
         removeByKeyFromHashMap();
         removeByValueFromHashMap();
                
-        System.out.println("Кінцевий розмір HashMap: " + hashtable.size());
+        System.out.println("Кінцевий розмір HashMap: " + hashMap.size());
 
         // Потім обробляємо LinkedHashMap
         System.out.println("\n\n========= Операції з LinkedHashMap =========");
-        System.out.println("Початковий розмір LinkedHashMap: " + treeMap.size());
+        System.out.println("Початковий розмір LinkedHashMap: " + linkedHashMap.size());
         
         findByKeyInLinkedHashMap();
         findByValueInLinkedHashMap();
@@ -176,7 +176,7 @@ public class BasicDataOperationUsingMap {
         removeByKeyFromLinkedHashMap();
         removeByValueFromLinkedHashMap();
         
-        System.out.println("Кінцевий розмір LinkedHashMap: " + treeMap.size());
+        System.out.println("Кінцевий розмір LinkedHashMap: " + linkedHashMap.size());
     }
 
 
@@ -190,7 +190,7 @@ public class BasicDataOperationUsingMap {
         System.out.println("\n=== Пари ключ-значення в HashMap ===");
         long timeStart = System.nanoTime();
 
-        hashtable.entrySet().forEach(entry ->
+        hashMap.entrySet().forEach(entry ->
             System.out.println("  " + entry.getKey() + " -> " + entry.getValue())
         );
 
@@ -205,7 +205,7 @@ public class BasicDataOperationUsingMap {
     private void sortHashMap() {
         long timeStart = System.nanoTime();
 
-       hashtable = hashtable.entrySet().stream()
+       hashMap = hashMap.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
@@ -224,12 +224,12 @@ public class BasicDataOperationUsingMap {
     void findByKeyInHashMap() {
         long timeStart = System.nanoTime();
 
-        boolean found = hashtable.containsKey(KEY_TO_SEARCH_AND_DELETE);
+        boolean found = hashMap.containsKey(KEY_TO_SEARCH_AND_DELETE);
 
         PerformanceTracker.displayOperationTime(timeStart, "пошук за ключем в HashMap");
 
         if (found) {
-            String value = hashtable.get(KEY_TO_SEARCH_AND_DELETE);
+            String value = hashMap.get(KEY_TO_SEARCH_AND_DELETE);
             System.out.println("Елемент з ключем '" + KEY_TO_SEARCH_AND_DELETE + "' знайдено. Власник: " + value);
         } else {
             System.out.println("Елемент з ключем '" + KEY_TO_SEARCH_AND_DELETE + "' відсутній в HashMap.");
@@ -243,13 +243,13 @@ public class BasicDataOperationUsingMap {
     void findByValueInHashMap() {
         long timeStart = System.nanoTime();
 
-        List<Chinchilla> keysToRemove = hashtable.entrySet().stream()
+        List<Chinchilla> keysToRemove = hashMap.entrySet().stream()
                 .filter(entry -> entry.getValue() != null && entry.getValue().equals(VALUE_TO_SEARCH_AND_DELETE))
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 
 
-        keysToRemove.forEach(hashtable::remove);
+        keysToRemove.forEach(hashMap::remove);
 
         PerformanceTracker.displayOperationTime(timeStart, "бінарний пошук за значенням в HashMap");
 
@@ -266,7 +266,7 @@ public class BasicDataOperationUsingMap {
     void addEntryToHashMap() {
         long timeStart = System.nanoTime();
 
-        hashtable.put(KEY_TO_ADD, VALUE_TO_ADD);
+        hashMap.put(KEY_TO_ADD, VALUE_TO_ADD);
 
         PerformanceTracker.displayOperationTime(timeStart, "додавання запису до HashMap");
 
@@ -279,7 +279,7 @@ public class BasicDataOperationUsingMap {
     void removeByKeyFromHashMap() {
         long timeStart = System.nanoTime();
 
-        String removedValue = hashtable.remove(KEY_TO_SEARCH_AND_DELETE);
+        String removedValue = hashMap.remove(KEY_TO_SEARCH_AND_DELETE);
 
         PerformanceTracker.displayOperationTime(timeStart, "видалення за ключем з HashMap");
 
@@ -296,12 +296,12 @@ public class BasicDataOperationUsingMap {
     void removeByValueFromHashMap() {
         long timeStart = System.nanoTime();
 
-        List<Chinchilla> keysToRemove = hashtable.entrySet().stream()
+        List<Chinchilla> keysToRemove = hashMap.entrySet().stream()
                 .filter(entry -> entry.getValue() != null && entry.getValue().equals(VALUE_TO_SEARCH_AND_DELETE))
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
        
-        keysToRemove.forEach(hashtable::remove);
+        keysToRemove.forEach(hashMap::remove);
 
         PerformanceTracker.displayOperationTime(timeStart, "видалення за значенням з HashMap");
 
@@ -318,7 +318,7 @@ public class BasicDataOperationUsingMap {
         System.out.println("\n=== Пари ключ-значення в LinkedHashMap ===");
 
         long timeStart = System.nanoTime();
-        for (Map.Entry<Chinchilla, String> entry : treeMap.entrySet()) {
+        for (Map.Entry<Chinchilla, String> entry : linkedHashMap.entrySet()) {
             System.out.println("  " + entry.getKey() + " -> " + entry.getValue());
         }
 
@@ -327,20 +327,19 @@ public class BasicDataOperationUsingMap {
 
     /**
      * Сортує LinkedHashMap за ключами з використанням природного порядку Chinchilla.
-     * Перезаписує treeMap відсортованими даними (LinkedHashMap зберігає порядок вставки).
+     * Перезаписує linkedHashMap відсортованими даними (LinkedHashMap зберігає порядок вставки).
      */
     private void sortLinkedHashMap() {
         long timeStart = System.nanoTime();
 
-        List<Chinchilla> sortedKeys = new ArrayList<>(treeMap.keySet());
-        Collections.sort(sortedKeys);
-
-        LinkedHashMap<Chinchilla, String> sorted = new LinkedHashMap<>();
-        for (Chinchilla key : sortedKeys) {
-            sorted.put(key, treeMap.get(key));
-        }
-
-        treeMap = sorted;
+        linkedHashMap = linkedHashMap.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
 
         PerformanceTracker.displayOperationTime(timeStart, "сортування LinkedHashMap за ключами");
     }
@@ -352,12 +351,12 @@ public class BasicDataOperationUsingMap {
     void findByKeyInLinkedHashMap() {
         long timeStart = System.nanoTime();
 
-        boolean found = treeMap.containsKey(KEY_TO_SEARCH_AND_DELETE);
+        boolean found = linkedHashMap.containsKey(KEY_TO_SEARCH_AND_DELETE);
 
         PerformanceTracker.displayOperationTime(timeStart, "пошук за ключем в LinkedHashMap");
 
         if (found) {
-            String value = treeMap.get(KEY_TO_SEARCH_AND_DELETE);
+            String value = linkedHashMap.get(KEY_TO_SEARCH_AND_DELETE);
             System.out.println("Елемент з ключем '" + KEY_TO_SEARCH_AND_DELETE + "' знайдено. Власник: " + value);
         } else {
             System.out.println("Елемент з ключем '" + KEY_TO_SEARCH_AND_DELETE + "' відсутній в LinkedHashMap.");
@@ -372,7 +371,7 @@ public class BasicDataOperationUsingMap {
         long timeStart = System.nanoTime();
 
         // Створюємо список Entry та сортуємо за значеннями
-        List<Map.Entry<Chinchilla, String>> entries = new ArrayList<>(treeMap.entrySet());
+        List<Map.Entry<Chinchilla, String>> entries = new ArrayList<>(linkedHashMap.entrySet());
         Comparator<Map.Entry<Chinchilla, String>> comparator = Comparator.comparing(
             Map.Entry::getValue, Comparator.nullsFirst(Comparator.naturalOrder())
         );
@@ -403,7 +402,7 @@ public class BasicDataOperationUsingMap {
     void addEntryToLinkedHashMap() {
         long timeStart = System.nanoTime();
 
-        treeMap.put(KEY_TO_ADD, VALUE_TO_ADD);
+        linkedHashMap.put(KEY_TO_ADD, VALUE_TO_ADD);
 
         PerformanceTracker.displayOperationTime(timeStart, "додавання запису до LinkedHashMap");
 
@@ -416,7 +415,7 @@ public class BasicDataOperationUsingMap {
     void removeByKeyFromLinkedHashMap() {
         long timeStart = System.nanoTime();
 
-        String removedValue = treeMap.remove(KEY_TO_SEARCH_AND_DELETE);
+        String removedValue = linkedHashMap.remove(KEY_TO_SEARCH_AND_DELETE);
 
         PerformanceTracker.displayOperationTime(timeStart, "видалення за ключем з LinkedHashMap");
 
@@ -434,14 +433,14 @@ public class BasicDataOperationUsingMap {
         long timeStart = System.nanoTime();
 
         List<Chinchilla> keysToRemove = new ArrayList<>();
-        for (Map.Entry<Chinchilla, String> entry : treeMap.entrySet()) {
+        for (Map.Entry<Chinchilla, String> entry : linkedHashMap.entrySet()) {
             if (entry.getValue() != null && entry.getValue().equals(VALUE_TO_SEARCH_AND_DELETE)) {
                 keysToRemove.add(entry.getKey());
             }
         }
         
         for (Chinchilla key : keysToRemove) {
-            treeMap.remove(key);
+            linkedHashMap.remove(key);
         }
 
         PerformanceTracker.displayOperationTime(timeStart, "видалення за значенням з LinkedHashMap");
@@ -454,19 +453,19 @@ public class BasicDataOperationUsingMap {
      */
     public static void main(String[] args) {
         // Створюємо початкові дані (ключ: Chinchilla{nickname, weight}, значення: ім'я власника)
-        HashMap<Chinchilla, String> hashtable = new HashMap<>();
-        hashtable.put(new Chinchilla("Пухнастик", 12.5), "Ярослав");
-        hashtable.put(new Chinchilla("Комета", 2.0), "Зінаїда");
-        hashtable.put(new Chinchilla("Сніжинка", 7.45), "Поліна");
-        hashtable.put(new Chinchilla("Гномик", 6.7), "Арсеній");
-        hashtable.put(new Chinchilla("Комета", 2.6), "Арсеній");
-        hashtable.put(new Chinchilla("Білосніжка", 6.1), "Андрій");
-        hashtable.put(new Chinchilla("Пухнастик", 10.04), "Ярослав");
-        hashtable.put(new Chinchilla("Цукерка", 15.1), "Зінаїда");
-        hashtable.put(new Chinchilla("Місяць", 10.10), "Стефанія");
-        hashtable.put(new Chinchilla("Стріла", 3.78), "Тимофій");
+        HashMap<Chinchilla, String> hashMap = new HashMap<>();
+        hashMap.put(new Chinchilla("Пухнастик", 12.5), "Ярослав");
+        hashMap.put(new Chinchilla("Комета", 2.0), "Зінаїда");
+        hashMap.put(new Chinchilla("Сніжинка", 7.45), "Поліна");
+        hashMap.put(new Chinchilla("Гномик", 6.7), "Арсеній");
+        hashMap.put(new Chinchilla("Комета", 2.6), "Арсеній");
+        hashMap.put(new Chinchilla("Білосніжка", 6.1), "Андрій");
+        hashMap.put(new Chinchilla("Пухнастик", 10.04), "Ярослав");
+        hashMap.put(new Chinchilla("Цукерка", 15.1), "Зінаїда");
+        hashMap.put(new Chinchilla("Місяць", 10.10), "Стефанія");
+        hashMap.put(new Chinchilla("Стріла", 3.78), "Тимофій");
 
-        LinkedHashMap<Chinchilla, String> treeMap = new LinkedHashMap<Chinchilla, String>() {{
+        LinkedHashMap<Chinchilla, String> linkedHashMap = new LinkedHashMap<Chinchilla, String>() {{
             put(new Chinchilla("Пухнастик", 12.5), "Ярослав");
             put(new Chinchilla("Комета", 2.0), "Зінаїда");
             put(new Chinchilla("Сніжинка", 7.45), "Поліна");
@@ -480,7 +479,7 @@ public class BasicDataOperationUsingMap {
         }};
 
         // Створюємо об'єкт і виконуємо операції
-        BasicDataOperationUsingMap operations = new BasicDataOperationUsingMap(hashtable, treeMap);
+        BasicDataOperationUsingMap operations = new BasicDataOperationUsingMap(hashMap, linkedHashMap);
         operations.executeDataOperations();
     }
 }

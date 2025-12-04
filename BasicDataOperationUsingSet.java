@@ -20,7 +20,7 @@ import java.util.Set;
 public class BasicDataOperationUsingSet {
     byte byteValueToSearch;
     Byte[] byteArray;
-    Set<Byte> dateTimeSet = new HashSet<>();
+    Set<Byte> byteSet = new HashSet<>();
 
     /**
      * Конструктор, який iнiцiалiзує об'єкт з готовими даними.
@@ -31,7 +31,7 @@ public class BasicDataOperationUsingSet {
     BasicDataOperationUsingSet(byte byteValueToSearch, Byte[] byteArray) {
         this.byteValueToSearch = byteValueToSearch;
         this.byteArray = byteArray;
-        this.dateTimeSet = new HashSet<>(Arrays.asList(byteArray));
+        this.byteSet = new HashSet<>(Arrays.asList(byteArray));
     }
     
     /**
@@ -122,7 +122,7 @@ public class BasicDataOperationUsingSet {
     private void findInSet() {
         long timeStart = System.nanoTime();
 
-        boolean elementExists = dateTimeSet.stream()
+        boolean elementExists = byteSet.stream()
             .anyMatch(dateTime -> dateTime.equals(byteValueToSearch));
 
         PerformanceTracker.displayOperationTime(timeStart, "пошук елемента в HashSet чисел");
@@ -138,18 +138,18 @@ public class BasicDataOperationUsingSet {
      * Визначає найменше та найбільше значення в множині byte.
      */
     private void locateMinMaxInSet() {
-        if (dateTimeSet == null || dateTimeSet.isEmpty()) {
+        if (byteSet == null || byteSet.isEmpty()) {
             System.out.println("HashSet є пустим або не ініціалізованим.");
             return;
         }
 
         long timeStart = System.nanoTime();
 
-        Byte minValue = dateTimeSet.stream()
+        Byte minValue = byteSet.stream()
                 .min(Byte::compareTo)
                 .orElse(null);
        
-        Byte maxValue = dateTimeSet.stream()
+        Byte maxValue = byteSet.stream()
                 .max(Byte::compareTo)
                 .orElse(null);
 
@@ -164,10 +164,10 @@ public class BasicDataOperationUsingSet {
      */
     private void analyzeArrayAndSet() {
         System.out.println("Кiлькiсть елементiв в масивi: " + byteArray.length);
-        System.out.println("Кiлькiсть елементiв в HashSet: " + dateTimeSet.size());
+        System.out.println("Кiлькiсть елементiв в HashSet: " + byteSet.size());
 
         boolean allElementsPresent = Arrays.stream(byteArray)
-                .allMatch(dateTimeSet::contains);
+                .allMatch(byteSet::contains);
 
         if (allElementsPresent) {
             System.out.println("Всi елементи масиву наявні в HashSet.");

@@ -20,7 +20,7 @@ import java.util.List;
 public class BasicDataOperationUsingList {
     private byte byteValueToSearch;
     private Byte[] byteArray;
-    private List<Byte> dateTimeList;
+    private List<Byte> byteList;
 
     /**
      * Конструктор, який iнiцiалiзує об'єкт з готовими даними.
@@ -31,7 +31,7 @@ public class BasicDataOperationUsingList {
     BasicDataOperationUsingList(byte byteValueToSearch, Byte[] byteArray) {
         this.byteValueToSearch = byteValueToSearch;
         this.byteArray = byteArray;
-        this.dateTimeList = new ArrayList<>(Arrays.asList(byteArray));
+        this.byteList = new ArrayList<>(Arrays.asList(byteArray));
     }
     
     /**
@@ -130,9 +130,9 @@ public class BasicDataOperationUsingList {
     void findInList() {
         long timeStart = System.nanoTime();
 
-        int position = dateTimeList.stream()
-            .map(dateTimeList::indexOf)
-            .filter(i -> byteValueToSearch == dateTimeList.get(i))
+        int position = byteList.stream()
+            .map(byteList::indexOf)
+            .filter(i -> byteValueToSearch == byteList.get(i))
             .findFirst()
             .orElse(-1);
 
@@ -149,15 +149,15 @@ public class BasicDataOperationUsingList {
      * Визначає найменше і найбільше значення в колекції ArrayList з числами.
      */
     void locateMinMaxInList() {
-        if (dateTimeList == null || dateTimeList.isEmpty()) {
+        if (byteList == null || byteList.isEmpty()) {
             System.out.println("Колекція ArrayList є пустою або не ініціалізованою.");
             return;
         }
 
         long timeStart = System.nanoTime();
 
-        byte minValue = Collections.min(dateTimeList);
-        byte maxValue = Collections.max(dateTimeList);
+        byte minValue = Collections.min(byteList);
+        byte maxValue = Collections.max(byteList);
 
         PerformanceTracker.displayOperationTime(timeStart, "визначення мiнiмального i максимального числа в List");
 
@@ -172,7 +172,7 @@ public class BasicDataOperationUsingList {
     void sortList() {
         long timeStart = System.nanoTime();
 
-        dateTimeList = dateTimeList.stream()
+        byteList = byteList.stream()
                        .sorted()
                        .collect(java.util.stream.Collectors.toList());
 
