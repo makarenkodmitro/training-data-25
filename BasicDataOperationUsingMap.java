@@ -36,87 +36,22 @@ public class BasicDataOperationUsingMap {
     // Значення сортуємо за звичайним порівнянням String (null-значення передані перші)
 
     /**
-     * Внутрішній клас Chinchilla для зберігання інформації про домашню тварину.
-     * Тепер характеристиками є кличка (nickname) та вага (weight).
+     * Record Pet для зберігання інформації про домашню тварину.
+     * Record автоматично створює конструктор, геттери, equals(), hashCode() та toString().
+     * @param nickname кличка тварини
+     * @param species вид тварини
      * Сортування (природний порядок, Comparable):
      *  - nickname — за зменшенням (descending)
      *  - weight   — за зменшенням (descending)
      */
-    public static class Chinchilla implements Comparable<Chinchilla> {
-        private final String nickname;
-        private final Double weight;
+    public record Chinchilla(String nickname, Double weight) {}
 
-        public Chinchilla(String nickname) {
-            this.nickname = nickname;
-            this.weight = null;
-        }
-
-        public Chinchilla(String nickname, Double weight) {
-            this.nickname = nickname;
-            this.weight = weight;
-        }
-
-        public String getNickname() {
-            return nickname;
-        }
-
-        public Double getWeight() {
-            return weight;
-        }
-
-        /**
-         * Порівнює за nickname (спочатку) та weight (якщо nickname однакові).
-         * Обидва поля сортуються за зменшенням.
-         */
-        @Override
-        public int compareTo(Chinchilla other) {
-            if (other == null) return 1;
-
-            // Порівняння nickname за спаданням
-            if (this.nickname == null && other.nickname != null) return 1;
-            if (this.nickname != null && other.nickname == null) return -1;
-            if (this.nickname != null && other.nickname != null) {
-                int nickComp = other.nickname.compareTo(this.nickname); // інвертоване для спадання
-                if (nickComp != 0) return nickComp;
-            }
-
-            // Якщо клички однакові (або обидві null) — порівнюємо weight за спаданням
-            if (this.weight == null && other.weight == null) return 0;
-            if (this.weight == null) return 1; // null йде в кінець при спаданні
-            if (other.weight == null) return -1;
-
-            return other.weight.compareTo(this.weight); // інвертоване для спадання
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (obj == null || getClass() != obj.getClass()) return false;
-            Chinchilla other = (Chinchilla) obj;
-
-            boolean nickEq = nickname != null ? nickname.equals(other.nickname) : other.nickname == null;
-            boolean weightEq = weight != null ? weight.equals(other.weight) : other.weight == null;
-            return nickEq && weightEq;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = nickname != null ? nickname.hashCode() : 0;
-            long bits = weight != null ? Double.doubleToLongBits(weight) : 0L;
-            int weightHash = (int)(bits ^ (bits >>> 32));
-            result = 31 * result + weightHash;
-            return result;
-        }
-
-        @Override
-        public String toString() {
-            if (weight != null) {
-                return "Chinchilla{nickname='" + nickname + "', weight='" + weight + "'}";
-            }
-            return "Chinchilla{nickname='" + nickname + "'}";
-        }
-    }
-
+    /**
+     * Компаратор для порівняння об'єктів Chinchilla.
+     * Сортування: спочатку за кличкою (за зменшенням), потім за віком (за зменшенням).
+     */
+    private static final Comparator<Chinchilla> CHINCHILLA_COMPARATOR = 
+        Comparator.comparing(Chinchilla::nickname).thenComparing(Chinchilla::weight, Comparator.reverseOrder());
     /**
      * Конструктор, який ініціалізує об'єкт з готовими даними.
      * 
@@ -206,7 +141,7 @@ public class BasicDataOperationUsingMap {
         long timeStart = System.nanoTime();
 
        hashMap = hashMap.entrySet().stream()
-                .sorted(Map.Entry.comparingByKey())
+                .sorted(Map.Entry.comparingByKey(CHINCHILLA_COMPARATOR))
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
@@ -333,7 +268,7 @@ public class BasicDataOperationUsingMap {
         long timeStart = System.nanoTime();
 
         linkedHashMap = linkedHashMap.entrySet().stream()
-                .sorted(Map.Entry.comparingByKey())
+                .sorted(Map.Entry.comparingByKey(CHINCHILLA_COMPARATOR))
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
@@ -465,18 +400,17 @@ public class BasicDataOperationUsingMap {
         hashMap.put(new Chinchilla("Місяць", 10.10), "Стефанія");
         hashMap.put(new Chinchilla("Стріла", 3.78), "Тимофій");
 
-        LinkedHashMap<Chinchilla, String> linkedHashMap = new LinkedHashMap<Chinchilla, String>() {{
-            put(new Chinchilla("Пухнастик", 12.5), "Ярослав");
-            put(new Chinchilla("Комета", 2.0), "Зінаїда");
-            put(new Chinchilla("Сніжинка", 7.45), "Поліна");
-            put(new Chinchilla("Гномик", 6.7), "Арсеній");
-            put(new Chinchilla("Комета", 2.6), "Арсеній");
-            put(new Chinchilla("Білосніжка", 6.1), "Андрій");
-            put(new Chinchilla("Пухнастик", 10.04), "Ярослав");
-            put(new Chinchilla("Цукерка", 15.1), "Зінаїда");
-            put(new Chinchilla("Місяць", 10.10), "Стефанія");
-            put(new Chinchilla("Стріла", 3.78), "Тимофій");
-        }};
+        LinkedHashMap<Chinchilla, String> linkedHashMap = new LinkedHashMap<>();
+        linkedHashMap.put(new Chinchilla("Пухнастик", 12.5), "Ярослав");
+        linkedHashMap.put(new Chinchilla("Комета", 2.0), "Зінаїда");
+        linkedHashMap.put(new Chinchilla("Сніжинка", 7.45), "Поліна");
+        linkedHashMap.put(new Chinchilla("Гномик", 6.7), "Арсеній");
+        linkedHashMap.put(new Chinchilla("Комета", 2.6), "Арсеній");
+        linkedHashMap.put(new Chinchilla("Білосніжка", 6.1), "Андрій");
+        linkedHashMap.put(new Chinchilla("Пухнастик", 10.04), "Ярослав");
+        linkedHashMap.put(new Chinchilla("Цукерка", 15.1), "Зінаїда");
+        linkedHashMap.put(new Chinchilla("Місяць", 10.10), "Стефанія");
+        linkedHashMap.put(new Chinchilla("Стріла", 3.78), "Тимофій");
 
         // Створюємо об'єкт і виконуємо операції
         BasicDataOperationUsingMap operations = new BasicDataOperationUsingMap(hashMap, linkedHashMap);
